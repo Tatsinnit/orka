@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orka</title>
+    <script>
+      // Kill dark-mode FOUC: apply the theme before first paint. Mirrors the
+      // zustand `persist` store keyed as "orka-ui" ({ state: { theme }, version })
+      // and its migration; __root.tsx remains the post-hydration source of truth.
+      (function () {
+        var theme
+        try {
+          var raw = localStorage.getItem('orka-ui')
+          var parsed = raw ? JSON.parse(raw) : null
+          theme = parsed && parsed.state && parsed.state.theme
+          // Before version 1, 'light' was everyone's default, not a choice.
+          // Like zustand, migrate only an entry with an older numeric version.
+          if (theme === 'light' && typeof parsed.version === 'number' && parsed.version < 1) theme = 'system'
+        } catch (e) {
+          /* blocked or malformed storage: follow the system */
+        }
+        var systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (theme === 'dark' || (theme !== 'light' && systemDark)) {
+          document.documentElement.classList.add('dark')
+        }
+      })()
+    </script>
+    <script type="module" crossorigin src="./assets/index-BFxR0lB5.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-4F4sm7cs.css">
+  </head>
+  <body class="min-h-screen bg-background font-sans antialiased">
+    <div id="root"></div>
+  </body>
+</html>
